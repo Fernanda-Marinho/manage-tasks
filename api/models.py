@@ -20,9 +20,21 @@ class Task(db.Model):
     
     created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
     
-    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)
+    updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow, nullable=True)
     
     deleted_at = db.Column(db.DateTime, nullable=True) # new column for track soft delete
+
+    def to_dict(self):
+        return {
+            'id': str(self.id),
+            'title': self.title,
+            'description': self.description,
+            'status': self.status,
+            'category_id': self.category_id,
+            'created_at': self.created_at.isoformat(),
+            'updated_at': self.updated_at.isoformat() if self.updated_at else None,
+            'deleted_at': self.deleted_at.isoformat() if self.deleted_at else None
+        }
 
 class Category(db.Model):
     __tablename__ = 'categories'
