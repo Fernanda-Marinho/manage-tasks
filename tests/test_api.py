@@ -161,7 +161,7 @@ class TestTasksCreate:
         assert data['description'] == 'Descrição com espaços'
 
     def test_create_task_with_nonexistent_category(self, client):
-        """Deve aceitar category_id inexistente (FK permite NULL)"""
+        """Não deve aceitar category_id inválida"""
         response = client.post('/tasks',
             json={
                 'title': 'Tarefa',
@@ -170,7 +170,7 @@ class TestTasksCreate:
             content_type='application/json'
         )
         
-        assert response.status_code == 201
+        assert response.status_code == 400
 
 
 class TestTasksList:
