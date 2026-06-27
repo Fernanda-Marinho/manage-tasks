@@ -14,12 +14,23 @@ services:
       interval: 3s
       timeout: 3s
       retries: 10
-
-  api:
-    build: ./api
+  tests:
+    build:
+      context: .
+      dockerfile: tests/Dockerfile
     depends_on:
       db:
         condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://user:pass@db:5432/tasks_db
+      FLASK_ENV: testing
+    volumes:
+      - ./:/app
+  api:
+    build: ./api
+    depends_on:
+      tests:
+        condition: service_completed_successfully
     environment:
       DATABASE_URL: postgresql://user:pass@db:5432/tasks_db
       FLASK_ENV: development
