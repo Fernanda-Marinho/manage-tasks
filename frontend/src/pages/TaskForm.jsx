@@ -12,14 +12,13 @@ export default function TaskForm() {
   const [status, setStatus] = useState('PENDING');
   const [categoryId, setCategoryId] = useState('');
   const [categories, setCategories] = useState([]);
+  const [successMessage, setSuccessMessage] = useState('');
 
   useEffect(() => {
-    // Busca categorias para o select
     fetch(`${API_URL}/categories`)
       .then(res => res.json())
       .then(data => setCategories(data));
 
-    // Se for edição, busca os dados da tarefa
     if (isEditing) {
       fetch(`${API_URL}/tasks/${id}`)
         .then(res => res.json())
@@ -51,7 +50,16 @@ export default function TaskForm() {
     });
 
     if (res.ok) {
-      navigate('/tasks');
+      if (isEditing) {
+        navigate('/tasks');
+      } else {
+        setTitle('');
+        setDescription('');
+        setStatus('PENDING');
+        setCategoryId('');
+        setSuccessMessage('Tarefa criada com sucesso!');
+        setTimeout(() => setSuccessMessage(''), 1000);
+      }
     } else {
       const error = await res.json();
       alert(error.error || "Erro ao salvar");
@@ -62,6 +70,10 @@ export default function TaskForm() {
     <div>
       <button onClick={() => navigate('/tasks')} className="btn-back">Voltar</button>
       <h2>{isEditing ? 'Editar Tarefa' : 'Nova Tarefa'}</h2>
+
+      {successMessage && (
+        <div className="alert-success">{successMessage}</div>
+      )}
       
       <form onSubmit={handleSubmit} className="form-vertical">
         <label>Título:</label>
