@@ -98,6 +98,8 @@ def update_task(id):
     if 'category_id' in data:
         task.category_id = data['category_id']
 
+    task.updated_at = datetime.utcnow()
+
     try:
         db.session.commit()
     except IntegrityError:

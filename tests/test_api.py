@@ -296,7 +296,7 @@ class TestTasksList:
 class TestTasksGetById:
     """Testes para GET /tasks/<id>"""
     
-    def test_get_task_by_id(self, client, sample_task):
+    def test_get_task_by_id(self, client, sample_task, sample_category):
         """Deve retornar tarefa pelo ID"""
         response = client.get(f'/tasks/{sample_task["id"]}')
         
@@ -304,6 +304,8 @@ class TestTasksGetById:
         data = response.get_json()
         assert data['id'] == sample_task['id']
         assert data['title'] == sample_task['title']
+        assert data['category_id'] == sample_category['id']
+        assert data['updated_at'] is None
 
     def test_get_task_nonexistent_id(self, client):
         """Deve retornar 404 para ID inexistente"""
@@ -341,6 +343,7 @@ class TestTasksUpdate:
         assert response.status_code == 200
         data = response.get_json()
         assert data['title'] == 'Novo título'
+        assert data['updated_at'] is not None
 
     def test_update_task_status(self, client, sample_task):
         """Deve atualizar status"""
