@@ -3,11 +3,13 @@ from flask import Flask
 from flask_migrate import Migrate
 from models import db
 from routes import api_bp
+from flask_cors import CORS
 
 migrate = Migrate()
 
 def create_app(config_name=None):
     app = Flask(__name__)
+    CORS(app)
 
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'postgresql://user:pass@db:5432/tasks_db')
 
